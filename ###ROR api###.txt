@@ -1,0 +1,71 @@
+###ROR api###
+>>rails new sell_it --api -T
+
+#cree 1er point d'entree de test
+#go /config/routes.rb pour cree le 1er route
+	get 'ping' => 'application#ping'
+
+#dans app/application_controller.rb
+	def ping
+		#render reponse pong en json 
+		render json: { response: 'pong' }
+	end
+
+#dans le cmd
+>>curl -X GET http://localhost:3000/
+
+#existing_app
+
+#generer le model inside sell_it
+>>rails generate model Classified title:string price:integer description:text
+>>rails db:migrate 
+
+#routes
+	resources :classifieds, only: :show
+>>rails generate controller Classifieds
+
+#dans le controller
+---------------------------------------------------
+	class ClassifiedsController < ApplicationController
+		def show
+			render json: Classified.find(params[:id])
+		end
+	end
+
+#cree une lassiified par rails console puis dans navigateur
+#http://localhost:3000/classifieds/1
+
+#gemfile pour Tests
+  gem 'rspec-rails', '~> 3.6'
+  >>rails generate rspec:install
+  >>rspec
+
+  gem 'factory_girl_rails' //construire des donnees dans la base
+  gem 'faker' //faux test ,email, num tel 
+
+  >>rails generate rspec:integration classifieds //genere test d'integration sur les requetes
+
+
+#cree list des annonces dans routes
+	resources :classifieds, only: [:show , :index] 
+#aller dans le controller
+	def index
+		render json: Classified.all
+	end
+
+#cree des authentification #cree le model use
+>>rails generate model User fullname:string username:string password_digest:string
+>>rails db:migrate
+
+#cree le lien entre le modeluser et classifieds
+>>rails generate migration AddUserRefToClassifieds user:references
+>>rails db:migrate
+#Authetification open gem file
+#gem 'knock'
+>>bundle install
+>>rails generate knock:install
+>>rails generate knock:token_controller user
+>>curl -X POST "http://localhost:3000/user_token" -d '{"auth": {"username": "admin", "password": "admin"}}' -H "Content-Type: application/json"
+
+
+
