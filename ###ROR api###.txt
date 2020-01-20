@@ -68,4 +68,12 @@
 >>curl -X POST "http://localhost:3000/user_token" -d '{"auth": {"username": "admin", "password": "admin"}}' -H "Content-Type: application/json"
 
 
+###pour utiliser le knock auth
+#cree une user
+>>User.create(fullname: 'admin' , username: 'admin' , password: 'admin')
+#puis
+>>curl -X POST "http://localhost:3000/user_token" -d '{"auth": {"username": "admin", "password": "admin"}}' -H "Content-Type: application/json"
+
+
+
 
